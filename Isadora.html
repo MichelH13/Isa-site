@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventuras da Isadora - Aprendendo Brincando!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .title {
+            font-size: 3em;
+            color: #fff;
+            text-shadow: 3px 3px 0px #333;
+            margin-bottom: 10px;
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { color: #ff6b6b; }
+            16% { color: #feca57; }
+            33% { color: #48dbfb; }
+            50% { color: #0abde3; }
+            66% { color: #1dd1a1; }
+            83% { color: #feca57; }
+            100% { color: #ff6b6b; }
+        }
+
+        .character {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 5px solid #fff;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .score-item {
+            background: rgba(255,255,255,0.9);
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .game-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid transparent;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #ff6b6b;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .game-card h3 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .game-card .icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .game-area {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .option {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .option.correct {
+            background: linear-gradient(45deg, #1dd1a1, #55a3ff);
+            animation: correctAnswer 0.6s ease;
+        }
+
+        .option.wrong {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            animation: wrongAnswer 0.6s ease;
+        }
+
+        @keyframes correctAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes wrongAnswer {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #1dd1a1;
+            color: white;
+            animation: celebration 1s ease;
+        }
+
+        .feedback.wrong {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        @keyframes celebration {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .star {
+            position: absolute;
+            color: #feca57;
+            font-size: 2em;
+            animation: starFall 3s linear infinite;
+        }
+
+        @keyframes starFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .reading-text {
+            font-size: 1.8em;
+            line-height: 1.6;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #a8edea, #fed6e3);
+            border-radius: 15px;
+            color: #333;
+        }
+
+        .word-highlight {
+            background: #feca57;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .word-highlight:hover {
+            transform: scale(1.1);
+            background: #ff6b6b;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2em; }
+            .game-menu { grid-template-columns: 1fr; }
+            .options { grid-template-columns: 1fr; }
+            .question { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="game-container">
+        <div class="header">
+            <div class="character">🦄</div>
+            <h1 class="title">Aventuras da Isadora!</h1>
+            <p style="color: white; font-size: 1.3em; text-shadow: 2px 2px 0px #333;">Aprendendo Matemática e Português Brincando! 🌟</p>
+        </div>
+
+        <div class="score-board">
+            <div class="score-item">
+                🏆 Pontos: <span id="score">0</span>
+            </div>
+            <div class="score-item">
+                ⭐ Estrelas: <span id="stars-count">0</span>
+            </div>
+            <div class="score-item">
+                🎯 Nível: <span id="level">1</span>
+            </div>
+        </div>
+
+        <div class="game-menu" id="gameMenu">
+            <div class="game-card" onclick="startGame('math')">
+                <div class="icon">🔢</div>
+                <h3>Matemática Mágica</h3>
+                <p>Vamos contar e somar com números divertidos!</p>
+            </div>
+            
+            <div class="game-card" onclick="startGame('reading')">
+                <div class="icon">📚</div>
+                <h3>Leitura Encantada</h3>
+                <p>Descubra palavras e histórias incríveis!</p>
+            </div>
+            
+            <div class="game-card" onclick="startGame('letters')">
+                <div class="icon">🔤</div>
+                <h3>Alfabeto Aventura</h3>
+                <p>Aprenda letras de forma super divertida!</p>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="question" id="question"></div>
+            <div class="reading-text" id="readingText" style="display: none;"></div>
+            <div class="options" id="options"></div>
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">Próxima Aventura! 🚀</button>
+            <button class="next-btn" onclick="backToMenu()">Voltar ao Menu 🏠</button>
+        </div>
+    </div>
+
+    <script>
+        let currentGame = '';
+        let currentQuestion = 0;
+        let score = 0;
+        let starsCount = 0;
+        let level = 1;
+        let questions = [];
+
+        // Dados dos jogos
+        const mathQuestions = [
+            {
+                question: "Quantas maçãs tem aqui? 🍎🍎🍎",
+                options: ["2", "3", "4", "5"],
+                correct: 1,
+                explanation: "Muito bem! São 3 maçãs deliciosas! 🍎✨"
+            },
+            {
+                question: "Quanto é 2 + 3? 🧮",
+                options: ["4", "5", "6", "7"],
+                correct: 1,
+                explanation: "Perfeito! 2 + 3 = 5! Você é um gênio da matemática! 🌟"
+            },
+            {
+                question: "Qual número vem depois do 7? 🔢",
+                options: ["6", "8", "9", "10"],
+                correct: 1,
+                explanation: "Isso mesmo! Depois do 7 vem o 8! 🎉"
+            },
+            {
+                question: "Quantos dedos temos em uma mão? ✋",
+                options: ["4", "5", "6", "3"],
+                correct: 1,
+                explanation: "Correto! Temos 5 dedos em cada mão! 👏"
+            },
+            {
+                question: "Quanto é 10 - 3? 🤔",
+                options: ["6", "7", "8", "9"],
+                correct: 1,
+                explanation: "Excelente! 10 - 3 = 7! Você está arrasando! 🚀"
+            }
+        ];
+
+        const readingQuestions = [
+            {
+                question: "Qual palavra rima com 'GATO'? 🐱",
+                options: ["PATO", "CASA", "BOLA", "FLOR"],
+                correct: 0,
+                explanation: "Muito bem! GATO rima com PATO! 🦆"
+            },
+            {
+                question: "Complete: O sol é ___",
+                options: ["azul", "amarelo", "verde", "roxo"],
+                correct: 1,
+                explanation: "Perfeito! O sol é amarelo e brilhante! ☀️"
+            },
+            {
+                question: "Quantas sílabas tem a palavra 'BORBOLETA'? 🦋",
+                options: ["2", "3", "4", "5"],
+                correct: 2,
+                explanation: "Isso mesmo! BOR-BO-LE-TA tem 4 sílabas! 🎵"
+            },
+            {
+                question: "Qual é o contrário de 'GRANDE'?",
+                options: ["pequeno", "alto", "forte", "rápido"],
+                correct: 0,
+                explanation: "Correto! O contrário de grande é pequeno! 📏"
+            }
+        ];
+
+        const letterQuestions = [
+            {
+                question: "Com qual letra começa 'ABACAXI'? 🍍",
+                options: ["B", "A", "C", "X"],
+                correct: 1,
+                explanation: "Perfeito! ABACAXI começa com a letra A! 🅰️"
+            },
+            {
+                question: "Qual letra faz o som 'SSSS'? 🐍",
+                options: ["R", "S", "T", "P"],
+                correct: 1,
+                explanation: "Muito bem! A letra S faz o som 'SSSS' como a cobra! 🐍"
+            },
+            {
+                question: "Quantas letras tem a palavra 'CASA'? 🏠",
+                options: ["3", "4", "5", "6"],
+                correct: 1,
+                explanation: "Correto! CASA tem 4 letras: C-A-S-A! 🏡"
+            }
+        ];
+
+        function startGame(gameType) {
+            currentGame = gameType;
+            currentQuestion = 0;
+            
+            document.getElementById('gameMenu').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            
+            switch(gameType) {
+                case 'math':
+                    questions = mathQuestions;
+                    break;
+                case 'reading':
+                    questions = readingQuestions;
+                    break;
+                case 'letters':
+                    questions = letterQuestions;
+                    break;
+            }
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= questions.length) {
+                showGameComplete();
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            document.getElementById('question').textContent = question.question;
+            document.getElementById('readingText').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+
+            options.forEach((option, index) => {
+                option.onclick = null;
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && index !== question.correct) {
+                    option.classList.add('wrong');
+                }
+            });
+
+            if (selectedIndex === question.correct) {
+                feedback.textContent = question.explanation;
+                feedback.className = 'feedback correct';
+                score += 10;
+                starsCount += 1;
+                createStars();
+                playSound('correct');
+            } else {
+                feedback.textContent = "Ops! Tente novamente na próxima! 💪";
+                feedback.className = 'feedback wrong';
+                playSound('wrong');
+            }
+
+            feedback.style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'block';
+            updateScore();
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            showQuestion();
+        }
+
+        function showGameComplete() {
+            document.getElementById('question').textContent = `🎉 Parabéns, Isadora! Você completou todas as aventuras! 🎉`;
+            document.getElementById('options').innerHTML = '';
+            document.getElementById('feedback').innerHTML = `
+                <div style="background: linear-gradient(45deg, #1dd1a1, #55a3ff); color: white; padding: 20px; border-radius: 15px;">
+                    <h2>🏆 MISSÃO CUMPRIDA! 🏆</h2>
+                    <p>Você ganhou ${score} pontos e ${starsCount} estrelas!</p>
+                    <p>Continue assim, você é incrível! ⭐</p>
+                </div>
+            `;
+            document.getElementById('feedback').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            level++;
+            updateScore();
+            createCelebration();
+        }
+
+        function backToMenu() {
+            document.getElementById('gameMenu').style.display = 'grid';
+            document.getElementById('gameArea').style.display = 'none';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('stars-count').textContent = starsCount;
+            document.getElementById('level').textContent = level;
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 10; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.textContent = '⭐';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+                
+                setTimeout(() => {
+                    star.remove();
+                }, 3000);
+            }
+        }
+
+        function createCelebration() {
+            const emojis = ['🎉', '🎊', '🌟', '✨', '🦄', '🌈', '🎈'];
+            for (let i = 0; i < 20; i++) {
+                const celebration = document.createElement('div');
+                celebration.style.position = 'fixed';
+                celebration.style.left = Math.random() * 100 + '%';
+                celebration.style.top = Math.random() * 100 + '%';
+                celebration.style.fontSize = '3em';
+                celebration.style.zIndex = '1001';
+                celebration.style.animation = 'celebration 2s ease-out forwards';
+                celebration.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                document.body.appendChild(celebration);
+                
+                setTimeout(() => {
+                    celebration.remove();
+                }, 2000);
+            }
+        }
+
+        function playSound(type) {
+            // Simulação de som com vibração (se disponível)
+            if (navigator.vibrate) {
+                if (type === 'correct') {
+                    navigator.vibrate([100, 50, 100]);
+                } else {
+                    navigator.vibrate(200);
+                }
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            updateScore();
+            
+            // Criar estrelas de fundo ocasionalmente
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.textContent = '✨';
+                    star.style.left = Math.random() * 100 + '%';
+                    document.getElementById('stars').appendChild(star);
+                    
+                    setTimeout(() => {
+                        star.remove();
+                    }, 3000);
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
